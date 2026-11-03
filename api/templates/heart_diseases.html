@@ -1,83 +1,217 @@
-
 {% extends 'layouts/base.html' %}
 {% block title %}
-<title>heart_diseases Prediction</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-
+    <title>Heart Disease Prediction | HealthPulse</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 {% endblock title %}
 {% block content %}
-   
+
+<style>
+    .pf-banner { text-align: center; color: #fff; overflow: hidden; }
+    .pf-banner::before {
+        content: ''; position: absolute; inset: 0; border-radius: 8px;
+        background: linear-gradient(120deg, rgba(36,41,45,.88), rgba(255,87,77,.72));
+    }
+    .pf-banner .banner_content { position: relative; max-width: 640px; margin: 0 auto; }
+    .pf-banner h1 { font-size: clamp(26px, 4vw, 40px); margin-bottom: 10px; }
+    .pf-banner p { font-size: 16px; line-height: 1.6; color: #f1f1f1; }
+
+    .pf-wrap { width: 100%; max-width: 780px; margin: 0 auto; }
+    .pf-card { background: #fff; border: 1px solid #ddd; border-radius: 14px; padding: 36px; box-shadow: 0 0 50px rgba(0,0,0,.06); }
+    .pf-card-head { display: flex; align-items: center; gap: 16px; margin-bottom: 28px; }
+    .pf-card-head svg { width: 56px; height: 56px; flex-shrink: 0; }
+    .pf-card-head h2 { font-size: 22px; color: #292929; margin-bottom: 4px; }
+    .pf-card-head p { font-size: 14px; color: #666; line-height: 1.5; }
+
+    .pf-card fieldset { border: 0; min-width: 0; margin-bottom: 28px; }
+    .pf-card legend { font-size: 16px; font-weight: 600; color: #292929; padding-bottom: 10px; margin-bottom: 18px; border-bottom: 1px solid #eee; width: 100%; }
+    .pf-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    .pf-field.full { grid-column: 1 / -1; }
+    .pf-field > label, .pf-label { display: block; font-size: 14px; color: #292929; margin-bottom: 8px; }
+    .pf-field small { display: block; margin-top: 6px; font-size: 12px; color: #777; line-height: 1.4; }
+
+    .pf-input {
+        display: block; width: 100%; padding: 14px; font-size: 16px; font-family: inherit;
+        color: #292929; background: #fff; border: 1px solid #ddd; border-radius: 8px; outline: none;
+        transition: border-color .2s, box-shadow .2s;
+    }
+    .pf-input:focus { border-color: #ff574d; box-shadow: 0 0 0 3px rgba(255,87,77,.15); }
+
+    .pf-seg { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; background: #f4f1f0; border: 1px solid #ddd; border-radius: 8px; }
+    .pf-seg input { position: absolute; opacity: 0; pointer-events: none; }
+    .pf-seg label { padding: 10px; text-align: center; font-size: 15px; color: #555; border-radius: 6px; cursor: pointer; transition: background-color .2s, color .2s; }
+    .pf-seg input:checked + label { background: #ff574d; color: #fff; }
+    .pf-seg input:focus-visible + label { outline: 3px solid #1a73e8; outline-offset: 1px; }
+
+    .pf-submit { width: 100%; padding: 16px; font-size: 16px; font-family: inherit; font-weight: 500; color: #fff; background: #ff574d; border: none; border-radius: 8px; cursor: pointer; transition: background-color .2s; }
+    .pf-submit:hover { background: #e0443a; }
+    .pf-submit:focus-visible { outline: 3px solid #1a73e8; outline-offset: 2px; }
+    .pf-note { margin-top: 16px; font-size: 12px; color: #777; line-height: 1.6; text-align: center; }
+    .pf-back { display: inline-block; margin-bottom: 18px; font-size: 14px; color: #292929; }
+    .pf-back:hover { color: #ff574d; }
+
+    .pf-result { margin-bottom: 24px; padding: 18px 20px; border-radius: 8px; border-left: 6px solid; }
+    .pf-result.high { background: #fff0ee; border-color: #ff574d; }
+    .pf-result.low { background: #ecf8f0; border-color: #2e9e5b; }
+    .pf-result strong { display: block; font-size: 17px; color: #292929; margin-bottom: 4px; }
+    .pf-result span { font-size: 14px; color: #555; line-height: 1.5; }
+
+    @media (max-width: 600px) {
+        .pf-card { padding: 22px 18px; }
+        .pf-grid { grid-template-columns: 1fr; gap: 18px; }
+        .pf-banner { padding: 56px 20px; }
+    }
+</style>
+
 <main class="main">
-<div class="banner">
-    <div class="banner_content">
-        <h1>heart diseases Prediction</h1>
-        <p>sub title here</p>
+    <div class="banner pf-banner">
+        <div class="banner_content">
+            <h1>Heart Disease Prediction</h1>
+            <p>Enter your measurements and lifestyle details to estimate your risk of heart disease.</p>
+        </div>
     </div>
-</div>
-    <div class="main_wrapper">
-        <div class="form_box">
-            <h2>heart_diseases</h2>
 
-<form id="heart-disease-form">
-    <label for="age">Age:</label>
-    <input type="number" id="age" name="age" required><br>
+    <div class="pf-wrap">
 
-    <label for="gender">Gender:</label>
-    <select id="gender" name="gender" required>
-        <option value="1">Female</option>
-        <option value="2">Male</option>
-    </select><br>
+        <div class="pf-card">
+            <div class="pf-card-head">
+                <svg viewBox="0 0 64 64" aria-hidden="true">
+                    <circle cx="32" cy="32" r="32" fill="#fff0ee"/>
+                    <path d="M32 50S14 39 14 26a9 9 0 0 1 18-3 9 9 0 0 1 18 3c0 13-18 24-18 24z" fill="#ff574d"/>
+                    <path d="M18 31h9l3-6 4 11 3-5h9" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                </svg>
+                <div>
+                    <h2>Heart disease risk check</h2>
+                    <p>All fields are required. It takes about a minute.</p>
+                </div>
+            </div>
 
-    <label for="height">Height (cm):</label>
-    <input type="number" id="height" name="height" required><br>
+            {% if prediction is defined and prediction is not none %}
+            <div class="pf-result {{ 'high' if prediction in [1, '1'] else 'low' }}" role="status">
+                <strong>{{ 'Higher risk of heart disease detected' if prediction in [1, '1'] else 'Lower risk of heart disease detected' }}</strong>
+                <span>This is an estimate from a machine learning model, not a diagnosis. Please talk to a doctor about your result.</span>
+            </div>
+            {% endif %}
 
-    <label for="weight">Weight (kg):</label>
-    <input type="number" id="weight" name="weight" required><br>
+            <form id="heart-disease-form" method="post" autocomplete="off">
 
-    <label for="ap_hi">Systolic Blood Pressure (mmHg):</label>
-    <input type="number" id="ap_hi" name="ap_hi" required><br>
+                <fieldset>
+                    <legend>Personal details</legend>
+                    <div class="pf-grid">
+                        <div class="pf-field">
+                            <label for="age">Age (years)</label>
+                            <input type="number" class="pf-input" id="age" name="age" min="1" max="120" step="1" placeholder="e.g. 52" required>
+                        </div>
 
-    <label for="ap_lo">Diastolic Blood Pressure (mmHg):</label>
-    <input type="number" id="ap_lo" name="ap_lo" required><br>
+                        <div class="pf-field">
+                            <span class="pf-label" id="gender-label">Gender</span>
+                            <div class="pf-seg" role="radiogroup" aria-labelledby="gender-label">
+                                <input type="radio" name="gender" id="gender-female" value="1" checked>
+                                <label for="gender-female">Female</label>
+                                <input type="radio" name="gender" id="gender-male" value="2">
+                                <label for="gender-male">Male</label>
+                            </div>
+                        </div>
 
-    <label for="cholesterol">Cholesterol Level:</label>
-    <select id="cholesterol" name="cholesterol" required>
-        <option value="1">Normal</option>
-        <option value="2">Above Normal</option>
-        <option value="3">High</option>
-    </select><br>
+                        <div class="pf-field">
+                            <label for="height">Height (cm)</label>
+                            <input type="number" class="pf-input" id="height" name="height" min="100" max="250" step="1" placeholder="e.g. 170" required>
+                        </div>
 
-    <label for="gluc">Glucose Level:</label>
-    <select id="gluc" name="gluc" required>
-        <option value="1">Normal</option>
-        <option value="2">Above Normal</option>
-        <option value="3">High</option>
-    </select><br>
+                        <div class="pf-field">
+                            <label for="weight">Weight (kg)</label>
+                            <input type="number" class="pf-input" id="weight" name="weight" min="30" max="300" step="0.1" placeholder="e.g. 72" required>
+                        </div>
+                    </div>
+                </fieldset>
 
-    <label for="smoke">Smoking:</label>
-    <select id="smoke" name="smoke" required>
-        <option value="0">No</option>
-        <option value="1">Yes</option>
-    </select><br>
+                <fieldset>
+                    <legend>Blood pressure and blood tests</legend>
+                    <div class="pf-grid">
+                        <div class="pf-field">
+                            <label for="ap_hi">Systolic blood pressure (mmHg)</label>
+                            <input type="number" class="pf-input" id="ap_hi" name="ap_hi" min="70" max="250" step="1" placeholder="e.g. 120" required>
+                            <small>The top number of your reading.</small>
+                        </div>
 
-    <label for="alco">Alcohol Consumption:</label>
-    <select id="alco" name="alco" required>
-        <option value="0">No</option>
-        <option value="1">Yes</option>
-    </select><br>
+                        <div class="pf-field">
+                            <label for="ap_lo">Diastolic blood pressure (mmHg)</label>
+                            <input type="number" class="pf-input" id="ap_lo" name="ap_lo" min="40" max="200" step="1" placeholder="e.g. 80" required>
+                            <small>The bottom number of your reading.</small>
+                        </div>
 
-    <label for="active">Physical Activity:</label>
-    <select id="active" name="active" required>
-        <option value="0">No</option>
-        <option value="1">Yes</option>
-    </select><br>
+                        <div class="pf-field">
+                            <label for="cholesterol">Cholesterol level</label>
+                            <select id="cholesterol" class="pf-input" name="cholesterol" required>
+                                <option value="1">Normal</option>
+                                <option value="2">Above normal</option>
+                                <option value="3">High</option>
+                            </select>
+                        </div>
 
-    <button type="submit">Predict</button>
-</form>
+                        <div class="pf-field">
+                            <label for="gluc">Glucose level</label>
+                            <select id="gluc" class="pf-input" name="gluc" required>
+                                <option value="1">Normal</option>
+                                <option value="2">Above normal</option>
+                                <option value="3">High</option>
+                            </select>
+                        </div>
+                    </div>
+                </fieldset>
 
-</div>
-</div>
+                <fieldset>
+                    <legend>Lifestyle</legend>
+                    <div class="pf-grid">
+                        <div class="pf-field">
+                            <span class="pf-label" id="smoke-label">Do you smoke?</span>
+                            <div class="pf-seg" role="radiogroup" aria-labelledby="smoke-label">
+                                <input type="radio" name="smoke" id="smoke-no" value="0" checked>
+                                <label for="smoke-no">No</label>
+                                <input type="radio" name="smoke" id="smoke-yes" value="1">
+                                <label for="smoke-yes">Yes</label>
+                            </div>
+                        </div>
+
+                        <div class="pf-field">
+                            <span class="pf-label" id="alco-label">Do you drink alcohol?</span>
+                            <div class="pf-seg" role="radiogroup" aria-labelledby="alco-label">
+                                <input type="radio" name="alco" id="alco-no" value="0" checked>
+                                <label for="alco-no">No</label>
+                                <input type="radio" name="alco" id="alco-yes" value="1">
+                                <label for="alco-yes">Yes</label>
+                            </div>
+                        </div>
+
+                        <div class="pf-field full">
+                            <span class="pf-label" id="active-label">Are you physically active?</span>
+                            <div class="pf-seg" role="radiogroup" aria-labelledby="active-label">
+                                <input type="radio" name="active" id="active-yes" value="1" checked>
+                                <label for="active-yes">Yes</label>
+                                <input type="radio" name="active" id="active-no" value="0">
+                                <label for="active-no">No</label>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <button type="submit" class="pf-submit">Predict my risk</button>
+                <p class="pf-note">HealthPulse gives an estimate for information only. It does not replace professional medical advice.</p>
+            </form>
+        </div>
+    </div>
 </main>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var hi = document.getElementById('ap_hi');
+        var lo = document.getElementById('ap_lo');
+        function check() {
+            var ok = !hi.value || !lo.value || Number(hi.value) > Number(lo.value);
+            lo.setCustomValidity(ok ? '' : 'Diastolic pressure must be lower than systolic pressure.');
+        }
+        hi.addEventListener('input', check);
+        lo.addEventListener('input', check);
+    });
+</script>
 
 {% endblock content %}

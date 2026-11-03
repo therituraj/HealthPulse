@@ -1,95 +1,184 @@
-
 {% extends 'layouts/base.html' %}
 {% block title %}
-    <title>Diabetes Prediction</title>
+    <title>Diabetes Prediction | HealthPulse</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-
 {% endblock title %}
 {% block content %}
-    <main class="main">
-    <div class="banner">
+
+<style>
+    .pf-banner { text-align: center; color: #fff; overflow: hidden; }
+    .pf-banner::before {
+        content: ''; position: absolute; inset: 0; border-radius: 8px;
+        background: linear-gradient(120deg, rgba(36,41,45,.88), rgba(255,87,77,.72));
+    }
+    .pf-banner .banner_content { position: relative; max-width: 640px; margin: 0 auto; }
+    .pf-banner h1 { font-size: clamp(26px, 4vw, 40px); margin-bottom: 10px; }
+    .pf-banner p { font-size: 16px; line-height: 1.6; color: #f1f1f1; }
+
+    .pf-wrap { width: 100%; max-width: 780px; margin: 0 auto; }
+    .pf-card { background: #fff; border: 1px solid #ddd; border-radius: 14px; padding: 36px; box-shadow: 0 0 50px rgba(0,0,0,.06); }
+    .pf-card-head { display: flex; align-items: center; gap: 16px; margin-bottom: 28px; }
+    .pf-card-head svg { width: 56px; height: 56px; flex-shrink: 0; }
+    .pf-card-head h2 { font-size: 22px; color: #292929; margin-bottom: 4px; }
+    .pf-card-head p { font-size: 14px; color: #666; line-height: 1.5; }
+
+    .pf-card fieldset { border: 0; min-width: 0; margin-bottom: 28px; }
+    .pf-card legend { font-size: 16px; font-weight: 600; color: #292929; padding-bottom: 10px; margin-bottom: 18px; border-bottom: 1px solid #eee; width: 100%; }
+    .pf-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    .pf-field.full { grid-column: 1 / -1; }
+    .pf-field > label, .pf-label { display: block; font-size: 14px; color: #292929; margin-bottom: 8px; }
+    .pf-field small { display: block; margin-top: 6px; font-size: 12px; color: #777; line-height: 1.4; }
+
+    .pf-input {
+        display: block; width: 100%; padding: 14px; font-size: 16px; font-family: inherit;
+        color: #292929; background: #fff; border: 1px solid #ddd; border-radius: 8px; outline: none;
+        transition: border-color .2s, box-shadow .2s;
+    }
+    .pf-input:focus { border-color: #ff574d; box-shadow: 0 0 0 3px rgba(255,87,77,.15); }
+
+    .pf-seg { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; background: #f4f1f0; border: 1px solid #ddd; border-radius: 8px; }
+    .pf-seg input { position: absolute; opacity: 0; pointer-events: none; }
+    .pf-seg label { padding: 10px; text-align: center; font-size: 15px; color: #555; border-radius: 6px; cursor: pointer; transition: background-color .2s, color .2s; }
+    .pf-seg input:checked + label { background: #ff574d; color: #fff; }
+    .pf-seg input:focus-visible + label { outline: 3px solid #1a73e8; outline-offset: 1px; }
+
+    .pf-submit { width: 100%; padding: 16px; font-size: 16px; font-family: inherit; font-weight: 500; color: #fff; background: #ff574d; border: none; border-radius: 8px; cursor: pointer; transition: background-color .2s; }
+    .pf-submit:hover { background: #e0443a; }
+    .pf-submit:focus-visible { outline: 3px solid #1a73e8; outline-offset: 2px; }
+    .pf-note { margin-top: 16px; font-size: 12px; color: #777; line-height: 1.6; text-align: center; }
+    .pf-back { display: inline-block; margin-bottom: 18px; font-size: 14px; color: #292929; }
+    .pf-back:hover { color: #ff574d; }
+
+    .pf-result { margin-bottom: 24px; padding: 18px 20px; border-radius: 8px; border-left: 6px solid; }
+    .pf-result.high { background: #fff0ee; border-color: #ff574d; }
+    .pf-result.low { background: #ecf8f0; border-color: #2e9e5b; }
+    .pf-result strong { display: block; font-size: 17px; color: #292929; margin-bottom: 4px; }
+    .pf-result span { font-size: 14px; color: #555; line-height: 1.5; }
+
+    @media (max-width: 600px) {
+        .pf-card { padding: 22px 18px; }
+        .pf-grid { grid-template-columns: 1fr; gap: 18px; }
+        .pf-banner { padding: 56px 20px; }
+    }
+</style>
+
+<main class="main">
+    <div class="banner pf-banner">
         <div class="banner_content">
-            <h1>Diabetes Prediction</h1>mLDQSuEzLwt2px3s
-            <p>sub title here</p>
+            <h1>Diabetes Prediction</h1>
+            <p>Answer a few questions about your health to estimate your risk of diabetes.</p>
         </div>
     </div>
-        <div class="main_wrapper">
-            <div class="form_box">
-                <h2>Diabetes</h2>
-<!-- gender,age,hypertension,heart_disease,smoking_history,bmi,HbA1c_level,blood_glucose_level,diabetes
-Female,20.0,0,0,never,27.32,6.6,85,0
-Female,44.0,0,0,never,19.31,6.5,200,1 -->
 
-                <div class="input_box">
-                    <label>heart_disease</label>
-                    <div class="input_checkbox">
-                        
-                    <label for="heart_disease">Yes</label>
-                    <label for="heart_disease">No</label>
-                    <input type="checkbox" name="heart_disease" id="heart_disease">
-                    <span id="checked"></span>
+    <div class="pf-wrap">
 
-                    </div>
+        <div class="pf-card">
+            <div class="pf-card-head">
+                <svg viewBox="0 0 64 64" aria-hidden="true">
+                    <circle cx="32" cy="32" r="32" fill="#fff0ee"/>
+                    <path d="M32 12c-7 10-12 16-12 23a12 12 0 0 0 24 0c0-7-5-13-12-23z" fill="#ff574d"/>
+                    <path d="M26 36a6 6 0 0 0 5 6" stroke="#fff" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                </svg>
+                <div>
+                    <h2>Diabetes risk check</h2>
+                    <p>All fields are required. It takes about a minute.</p>
                 </div>
-                <div class="input_box">
-                    <label>Gender</label>
-
-                    <div class="input_checkbox">
-                    <label for="gender">Male</label>
-                    <label for="gender">Female</label>
-                    <input type="checkbox" name="gender" id="gender">
-                    <span id="checked"></span>
-                    </div>
-                </div>
-                <div class="input_box">
-                    <label for="age">Age</label>
-                    <input type="number" class="input" placeholder="Enter age">
-                </div>
-
-
-
-
-
-
-                <label for="hypertension">Hypertension:</label>
-                <input type="number" class="input" id="hypertension" name="hypertension" required><br>
-        
-                <label for="smoking-history">Smoking History:</label>
-                <select id="smoking-history"  class="input" name="smokingHistory" required>
-                    <option value="No Info">No Info</option>
-                    <option value="never">Never</option>
-                    <option value="former">Former</option>
-                    <option value="current">Current</option>
-                    <option value="not current">Not Current</option>
-                    <option value="ever">Ever</option>
-                </select><br>
-        
-                <label for="bmi">BMI:</label>
-                <input type="number" class="input" id="bmi" name="bmi" step="0.01" required><br>
-        
-                <label for="hba1c-level">HbA1c Level:</label>
-                <input type="number" class="input" id="hba1c-level" name="hba1cLevel" step="0.01" required><br>
-        
-                <label for="blood-glucose-level">Blood Glucose Level:</label>
-                <input type="number" class="input" id="blood-glucose-level" name="bloodGlucoseLevel" required><br>
-        
-                <button type="submit" class="btn">Submit</button>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             </div>
+
+            {% if prediction is defined and prediction is not none %}
+            <div class="pf-result {{ 'high' if prediction in [1, '1'] else 'low' }}" role="status">
+                <strong>{{ 'Higher risk of diabetes detected' if prediction in [1, '1'] else 'Lower risk of diabetes detected' }}</strong>
+                <span>This is an estimate from a machine learning model, not a diagnosis. Please talk to a doctor about your result.</span>
+            </div>
+            {% endif %}
+
+            <form id="diabetes-form" method="post" autocomplete="off">
+
+                <fieldset>
+                    <legend>Personal details</legend>
+                    <div class="pf-grid">
+                        <div class="pf-field">
+                            <span class="pf-label" id="gender-label">Gender</span>
+                            <div class="pf-seg" role="radiogroup" aria-labelledby="gender-label">
+                                <input type="radio" name="gender" id="gender-female" value="Female" checked>
+                                <label for="gender-female">Female</label>
+                                <input type="radio" name="gender" id="gender-male" value="Male">
+                                <label for="gender-male">Male</label>
+                            </div>
+                        </div>
+
+                        <div class="pf-field">
+                            <label for="age">Age (years)</label>
+                            <input type="number" class="pf-input" id="age" name="age" min="1" max="120" step="1" placeholder="e.g. 45" required>
+                        </div>
+
+                        <div class="pf-field">
+                            <label for="smoking-history">Smoking history</label>
+                            <select id="smoking-history" class="pf-input" name="smokingHistory" required>
+                                <option value="No Info">No info</option>
+                                <option value="never">Never smoked</option>
+                                <option value="former">Former smoker</option>
+                                <option value="current">Current smoker</option>
+                                <option value="not current">Not a current smoker</option>
+                                <option value="ever">Has smoked before</option>
+                            </select>
+                        </div>
+
+                        <div class="pf-field">
+                            <label for="bmi">BMI</label>
+                            <input type="number" class="pf-input" id="bmi" name="bmi" min="10" max="100" step="0.01" placeholder="e.g. 27.3" required>
+                            <small>Body mass index. Weight in kg divided by height in metres squared.</small>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Medical history</legend>
+                    <div class="pf-grid">
+                        <div class="pf-field">
+                            <span class="pf-label" id="hypertension-label">Hypertension (high blood pressure)</span>
+                            <div class="pf-seg" role="radiogroup" aria-labelledby="hypertension-label">
+                                <input type="radio" name="hypertension" id="hyp-no" value="0" checked>
+                                <label for="hyp-no">No</label>
+                                <input type="radio" name="hypertension" id="hyp-yes" value="1">
+                                <label for="hyp-yes">Yes</label>
+                            </div>
+                        </div>
+
+                        <div class="pf-field">
+                            <span class="pf-label" id="heart-label">Heart disease</span>
+                            <div class="pf-seg" role="radiogroup" aria-labelledby="heart-label">
+                                <input type="radio" name="heart_disease" id="hd-no" value="0" checked>
+                                <label for="hd-no">No</label>
+                                <input type="radio" name="heart_disease" id="hd-yes" value="1">
+                                <label for="hd-yes">Yes</label>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Blood test results</legend>
+                    <div class="pf-grid">
+                        <div class="pf-field">
+                            <label for="hba1c-level">HbA1c level (%)</label>
+                            <input type="number" class="pf-input" id="hba1c-level" name="hba1cLevel" min="3" max="15" step="0.1" placeholder="e.g. 6.5" required>
+                            <small>Average blood sugar over the past 2 to 3 months.</small>
+                        </div>
+
+                        <div class="pf-field">
+                            <label for="blood-glucose-level">Blood glucose level (mg/dL)</label>
+                            <input type="number" class="pf-input" id="blood-glucose-level" name="bloodGlucoseLevel" min="50" max="400" step="1" placeholder="e.g. 140" required>
+                            <small>Your current blood sugar reading.</small>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <button type="submit" class="pf-submit">Predict my risk</button>
+                <p class="pf-note">HealthPulse gives an estimate for information only. It does not replace professional medical advice.</p>
+            </form>
         </div>
-    </main>
+    </div>
+</main>
 
 {% endblock content %}
