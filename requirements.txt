@@ -5,6 +5,7 @@ psycopg2-binary>=2.9
 python-dotenv>=1.0
 reportlab>=4.0
 numpy
+psycopg
 # IMPORTANT: pin the EXACT scikit-learn version your .pkl models were trained with.
 # Check it where you trained:  python -c "import sklearn; print(sklearn.__version__)"
 scikit-learn==1.5.2
