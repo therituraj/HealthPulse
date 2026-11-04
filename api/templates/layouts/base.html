@@ -33,74 +33,77 @@
 
 </head>
 <body>
-    <header>
-        
-    <nav class="navbar">
-        <div class="menu_left">
-            <button class="toggle lg-hidden {% if not user %}not_visible{% endif %}" id="menu_toggle">
-                <i class="bx bx-menu"></i>
+    
+<header>
+    <!-- Navbar -->
+    <nav class="lp-nav" id="lpNav">
+        <div class="lp-wrap">
+
+            <!-- Logo -->
+            <a href="/" class="lp-logo">
+                <i class='bx bx-shield-plus'></i>
+                Health<span>Pulse</span>
+            </a>
+
+            <!-- Mobile Toggle -->
+            <button class="lp-toggle" id="lpToggle"
+                    aria-label="Open menu"
+                    aria-expanded="false"
+                    aria-controls="lpMenu">
+                <i class='bx bx-menu'></i>
             </button>
-            <div class="logo">
-                <a href="/" class="logo_text">
-                    <span><i class='bx bx-shield-plus'></i></span>
-                    HealthPulse</a>
-            </div>
-            <ul class="main_menu" id="menu">
-                <li class="menu_li"> 
-                    <a href="/diabetes" class="menu_link">Diabetes</a>
-                </li>
-                <li class="menu_li">
-                    <a href="/heart_diseases" class="menu_link">Heart Diseases</a>
-                </li>
+
+            <!-- Navigation Links -->
+            <div class="lp-menu" id="lpMenu">
+
+                <a href="/diabetes">Diabetes</a>
+                <a href="/heart_diseases">Heart Diseases</a>
+
                 {% if user %}
-                <li class="menu_li">
-                    <a href="/logout" class="menu_link lg-hidden">Logout</a>
-                </li>
-                {% else %} 
-                <li class="menu_li">
-                    <a href="/login" class="menu_link lg-hidden">Login</a>
-                </li>
-                <li class="menu_li">
-                    <a href="/register" class="menu_link lg-hidden">Sign up</a>
-                </li>
-                {% endif %}
-            </ul>
-        </div>
 
-        <div class="menu_right">
-            {% if user %}
-            <!-- dropdown start -->
-            <div class="dropdown" data-dropdown="">
-                <a class="dropdown_btn user__data" data-dropdown-button="">
-                    <!-- <img src="./img/Avatar.jpg" alt="user profile image"> -->
-                    <i class='bx bx-user menu_circle'></i>
-                    <div class="user__content sm-hidden">
-                        <p>{{ user.name | default('N/A') }}</p>
-                        <p>{{ user.email | default('N/A') }}</p>
+                    <!-- User Dropdown -->
+                    <div class="lp-user-dropdown" data-dropdown>
+                        <a href="#" class="lp-user-btn" data-dropdown-button>
+                            <i class='bx bx-user-circle'></i>
+                            <span>{{ user.name | default('N/A') }}</span>
+                            <i class='bx bx-chevron-down'></i>
+                        </a>
 
+                        <div class="lp-dropdown-menu">
+                            <a href="{{ url_for('my_profile') }}">
+                                <i class='bx bx-user'></i> My Profile
+                            </a>
+
+                            <a href="{{ url_for('my_reports') }}">
+                                <i class='bx bx-file'></i> My Reports
+                            </a>
+
+                            <a href="{{ url_for('change_password') }}">
+                                <i class='bx bx-lock'></i> Change Password
+                            </a>
+
+                            <a href="{{ url_for('logout') }}">
+                                <i class='bx bx-log-out'></i> Logout
+                            </a>
+                        </div>
                     </div>
-                </a>
-                <div class="dropdown-menu">
-                    <a href="{{ url_for('my_profile') }}" class="dropdown_item">My profile</a>
-                    <a href="{{ url_for('my_reports') }}" class="dropdown_item">My Reports</a>
-                    <a href="{{ url_for('change_password') }}" class="dropdown_item">Change Password</a>
-                    <a href="{{ url_for('logout') }}" class="dropdown_item logout">
-                        <i class='bx bx-log-in'></i> Logout</a>
-                </div>
+
+                {% else %}
+
+                    <a href="{{ url_for('login') }}">Sign in</a>
+
+                    <a href="{{ url_for('register') }}"
+                       class="lp-btn primary">
+                        Get started
+                    </a>
+
+                {% endif %}
+
             </div>
-            <!-- dropdown end -->
-            {% else %}            
-                <a href="/login" class="btn btn-login sm-hidden">Login</a>
-                <a href="/register" class="btn btn-register sm-hidden">Signup</a>
-                
-                <button class="toggle lg-hidden only_sm" id="menu_toggle2">
-                    <i class="bx bx-menu"></i>
-                </button>
-            {% endif %}
-            <div id="menu_toggle2" style="display: none;"></div>
         </div>
     </nav>
-    </header>
+</header>
+
         
     {% block content %}{% endblock content %}
     

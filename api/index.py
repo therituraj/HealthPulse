@@ -303,8 +303,8 @@ def change_password():
                 return redirect(url_for('login'))
 
 
+# @route_enabled('login')
 @app.route('/login',methods=['GET', 'POST'])
-@route_enabled('login')
 def login():
     if request.method == 'POST':
         email = request.form.get('email')
@@ -332,8 +332,8 @@ def login():
 
 
 
+# @route_enabled('register')
 @app.route('/register', methods=['GET', 'POST'])
-@route_enabled('register')
 def register():
     if request.method == 'POST':
         name = request.form.get('name')
