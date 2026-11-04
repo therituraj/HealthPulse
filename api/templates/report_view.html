@@ -1,0 +1,63 @@
+{% extends 'layouts/base.html' %}
+{% from 'partials/report_macros.html' import kind_icon %}
+{% block title %}
+<title>{{ report.title }} | HealthPulse</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/reports.css') }}">
+{% endblock title %}
+{% block content %}
+<main class="main">
+<div class="hp-page hp-page--narrow">
+  <a class="hp-back" href="{{ url_for('my_reports') }}">&larr; All reports</a>
+
+  <div class="hp-paper">
+    <header class="hp-paper-head">
+      {{ kind_icon(report.kind, 56) }}
+      <div>
+        <h1>{{ report.title }}</h1>
+        <p class="hp-sub">
+          Report ID {{ report.public_id|upper }} &middot;
+          <time class="js-local" data-format="datetime" datetime="{{ report.created_at|iso_utc }}">{{ report.created_at|fmt_date(true) }}</time>
+          &middot; {{ user.name }}
+        </p>
+      </div>
+    </header>
+
+    <div class="hp-actions hp-actions--bar">
+      <a class="hp-btn" href="{{ url_for('report_pdf', public_id=report.public_id) }}">Export PDF</a>
+      <a class="hp-btn hp-btn--ghost" href="{{ url_for('new_report') }}">New report</a>
+      <form method="post" action="{{ url_for('delete_report', public_id=report.public_id) }}" data-confirm="Delete this report? This cannot be undone.">
+        <button type="submit" class="hp-btn hp-btn--danger">Delete</button>
+      </form>
+    </div>
+
+    <div class="hp-result {{ 'high' if report.is_high_risk else 'low' }}" role="status">
+      <strong>{{ headline }}</strong>
+      <span>This is an estimate from a machine learning model, not a diagnosis. Please talk to a doctor about your result.</span>
+      {% if report.percent is not none %}
+      <div class="hp-meter" aria-label="Estimated probability {{ '%g'|format(report.percent) }} percent">
+        <div class="hp-meter-bar"><i style="width: {{ report.percent }}%"></i></div>
+        <small>Estimated probability: <b>{{ '%g'|format(report.percent) }}%</b></small>
+      </div>
+      {% endif %}
+    </div>
+
+    {% for title, rows in sections %}
+    <h2 class="hp-h2">{{ title }}</h2>
+    <div class="hp-table-wrap">
+      <table class="hp-table hp-table--kv">
+        <tbody>
+        {% for label, value in rows %}
+          <tr><th scope="row">{{ label }}</th><td>{{ value }}</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endfor %}
+
+    <p class="hp-foot">HealthPulse gives an estimate for information only. It does not replace professional medical advice.</p>
+  </div>
+</div>
+</main>
+<script src="{{ url_for('static', filename='js/reports.js') }}" defer></script>
+{% endblock content %}

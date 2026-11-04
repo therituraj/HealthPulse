@@ -72,6 +72,16 @@
 
     <div class="pf-wrap">
 
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="alert_box">
+                {% for category,message in messages %}
+                <div class="alert alert-{{category}}">{{ message }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+            
         <div class="pf-card">
             <div class="pf-card-head">
                 <svg viewBox="0 0 64 64" aria-hidden="true">
