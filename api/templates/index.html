@@ -1,36 +1,82 @@
 {% extends 'layouts/base.html' %}
+{% from 'partials/report_macros.html' import kind_icon, risk_chip %}
 {% block title %}
-    <title>Dashboard | HealthPulse</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-
+<title>Home | HealthPulse</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/reports.css') }}">
 {% endblock title %}
 {% block content %}
 <main class="main">
-    <div class="main_wrapper">
+<div class="hp-page">
 
-        <div class="card">
-        <h1>Dashboard </h1>
-
-        <div class="alert alert-error">
-            The web page is under maintainance.
-            <br>
-            thanks for visiting.
-        </div>
-        
-        {% if user %}
-            <h2>Welcome, {{ user.name }}</h2>
-            
-        <div class="alert alert-success">
-            The Profile page is ready, 
-            <a href="/my_profile"><u> Click here</u></a>
-            to view your profile data.
-        </div>
-        {% endif %}
-
-        </div>
+  <header class="hp-head">
+    <div>
+      <h1>Welcome back, {{ user.name }}</h1>
+      <p class="hp-sub">Create a health risk report or pick up where you left off.</p>
     </div>
+    <a class="hp-btn" href="{{ url_for('new_report') }}">+ Generate new report</a>
+  </header>
+
+  {% if db_error %}
+  <div class="hp-alert" role="alert">We could not load your reports right now. You can still try again in a moment.</div>
+  {% endif %}
+
+  <section aria-labelledby="start-h">
+    <h2 class="hp-h2" id="start-h">Start a new report</h2>
+    <div class="hp-tiles">
+      <a class="hp-tile" href="{{ url_for('diabetes') }}">
+        {{ kind_icon('diabetes', 56) }}
+        <strong>Diabetes</strong>
+        <span>Risk from HbA1c, glucose, BMI</span>
+      </a>
+      <a class="hp-tile" href="{{ url_for('heart_diseases') }}">
+        {{ kind_icon('heart', 56) }}
+        <strong>Heart disease</strong>
+        <span>Risk from blood pressure, lifestyle</span>
+      </a>
+    </div>
+  </section>
+
+  <section aria-labelledby="recent-h">
+    <div class="hp-row">
+      <h2 class="hp-h2" id="recent-h">Recent reports</h2>
+      {% if total > 5 or reports %}
+      <a class="hp-link" href="{{ url_for('my_reports') }}">View all{% if total %} ({{ total }}){% endif %}</a>
+      {% endif %}
+    </div>
+
+    {% if reports %}
+    <div class="hp-cards">
+      {% for r in reports %}
+      <a class="hp-doc" href="{{ url_for('view_report', public_id=r.public_id) }}">
+        <div class="hp-doc-preview">
+          {{ kind_icon(r.kind, 40) }}
+          {{ risk_chip(r) }}
+          {% if r.percent is not none %}<div class="hp-doc-pct">{{ '%g'|format(r.percent) }}%</div>{% endif %}
+          <i></i><i></i><i class="short"></i>
+        </div>
+        <div class="hp-doc-meta">
+          <strong>{{ r.title }}</strong>
+          <small><time class="js-local" data-format="date" datetime="{{ r.created_at|iso_utc }}">{{ r.created_at|fmt_date }}</time></small>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+    {% elif not db_error %}
+    <div class="hp-empty">
+      <svg width="96" height="96" viewBox="0 0 64 64" aria-hidden="true">
+        <rect x="14" y="8" width="36" height="48" rx="5" fill="#fff0ee" stroke="#ff574d" stroke-width="2"/>
+        <path d="M22 22h20M22 30h20M22 38h12" stroke="#ff574d" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+      <h3>No reports yet</h3>
+      <p>Your generated reports will show up here. Start with your first one.</p>
+      <a class="hp-btn" href="{{ url_for('new_report') }}">Generate new report</a>
+    </div>
+    {% endif %}
+  </section>
+
+  <p class="hp-foot">Need to update your details? <a href="{{ url_for('my_profile') }}"><u>Open your profile</u></a>.</p>
+</div>
 </main>
-
-
-
+<script src="{{ url_for('static', filename='js/reports.js') }}" defer></script>
 {% endblock content %}

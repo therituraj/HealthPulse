@@ -1,0 +1,19 @@
+{% macro kind_icon(kind, size=44) -%}
+{% if kind == 'diabetes' -%}
+<svg class="hp-icon" width="{{ size }}" height="{{ size }}" viewBox="0 0 64 64" aria-hidden="true">
+  <circle cx="32" cy="32" r="32" fill="#fff0ee"/>
+  <path d="M32 12c-7 10-12 16-12 23a12 12 0 0 0 24 0c0-7-5-13-12-23z" fill="#ff574d"/>
+  <path d="M26 36a6 6 0 0 0 5 6" stroke="#fff" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+</svg>
+{%- else -%}
+<svg class="hp-icon" width="{{ size }}" height="{{ size }}" viewBox="0 0 64 64" aria-hidden="true">
+  <circle cx="32" cy="32" r="32" fill="#fff0ee"/>
+  <path d="M32 50S14 39 14 26a9 9 0 0 1 18-3 9 9 0 0 1 18 3c0 13-18 24-18 24z" fill="#ff574d"/>
+  <path d="M18 31h9l3-6 4 11 3-5h9" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>
+{%- endif %}
+{%- endmacro %}
+
+{% macro risk_chip(report) -%}
+<span class="hp-chip {{ 'hp-chip--high' if report.is_high_risk else 'hp-chip--low' }}">{{ report.risk_label }}</span>
+{%- endmacro %}

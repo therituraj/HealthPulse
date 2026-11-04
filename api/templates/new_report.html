@@ -1,0 +1,35 @@
+{% extends 'layouts/base.html' %}
+{% from 'partials/report_macros.html' import kind_icon %}
+{% block title %}
+<title>New report | HealthPulse</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/reports.css') }}">
+{% endblock title %}
+{% block content %}
+<main class="main">
+<div class="hp-page">
+  <a class="hp-back" href="{{ url_for('home') }}">&larr; Back to home</a>
+  <header class="hp-head">
+    <div>
+      <h1>Generate a new report</h1>
+      <p class="hp-sub">Choose the type of report. It takes about a minute.</p>
+    </div>
+  </header>
+
+  <div class="hp-choices">
+    <a class="hp-choice" href="{{ url_for('diabetes') }}">
+      {{ kind_icon('diabetes', 64) }}
+      <h2>Diabetes risk report</h2>
+      <p>You will need your age, BMI, HbA1c and blood glucose, plus smoking and medical history.</p>
+      <span class="hp-btn">Start</span>
+    </a>
+    <a class="hp-choice" href="{{ url_for('heart_diseases') }}">
+      {{ kind_icon('heart', 64) }}
+      <h2>Heart disease risk report</h2>
+      <p>You will need height, weight, blood pressure, cholesterol and glucose levels, plus lifestyle.</p>
+      <span class="hp-btn">Start</span>
+    </a>
+  </div>
+</div>
+</main>
+{% endblock content %}

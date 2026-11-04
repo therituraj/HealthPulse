@@ -1,0 +1,17 @@
+{% extends 'layouts/base.html' %}
+{% block title %}
+<title>{{ code }} | HealthPulse</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/reports.css') }}">
+{% endblock title %}
+{% block content %}
+<main class="main">
+<div class="hp-page">
+  <div class="hp-empty">
+    <h1 class="hp-code">{{ code }}</h1>
+    <p>{{ message }}</p>
+    <a class="hp-btn" href="{{ url_for('home') }}">Back to home</a>
+  </div>
+</div>
+</main>
+{% endblock content %}
