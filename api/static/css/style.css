@@ -490,9 +490,11 @@ a {
 
     .lp-menu.active {
         display: flex;
+        visibility: visible;
+        opacity: 1;
     }
 
-    .lp-menu a:not(.lp-btn) {
+    .lp-menu a:not(.lp-btn){
         padding: 10px 5px;
     }
 
@@ -510,6 +512,7 @@ a {
         box-shadow: none;
         border: 1px solid #eee;
         margin-top: 8px;
+        display: block;
     }
 }
 
