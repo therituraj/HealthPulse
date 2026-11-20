@@ -363,6 +363,10 @@ a {
     white-space: nowrap;
 }
 
+.lp-footer .lp-logo{
+    color: #fff;
+}
+
 .lp-logo i {
     font-size: 30px;
     color: var(--lp-red, #e63946);
